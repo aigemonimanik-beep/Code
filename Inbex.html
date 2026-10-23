@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="bn" id="htmlElement">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>স্মার্ট কোড আপডেটার - Ultimate Pro Max v3</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+    
+    <!-- FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- CodeMirror Core (For Syntax Highlighting & Fullscreen) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/display/fullscreen.min.css">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/xml/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/css/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/htmlmixed/htmlmixed.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/display/fullscreen.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700;900&display=swap');
+        
+        /* Stop Pull-to-Refresh & Box Clearing on Mobile Pull strictly */
+        :root { overscroll-behavior: none; touch-action: pan-y; }
+        html, body { overscroll-behavior: none; overscroll-behavior-y: none; font-family: 'Hind Siliguri', sans-serif; background-color: #f0f4f8; -webkit-overflow-scrolling: touch; }
+        
+        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        
+        /* CodeMirror Custom Height & Styling */
+        .CodeMirror { height: 350px; border-radius: 0.75rem; font-family: 'Courier New', Courier, monospace; font-size: 13px; z-index: 5; border: 2px solid #cbd5e1; }
+        .CodeMirror-fullscreen { z-index: 9999 !important; border-radius: 0 !important; }
+        
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    </style>
+</head>
+<body class="p-2 md:p-6 pb-24">
+
+    <!-- FULL SCREEN PREVIEW MODAL -->
+    <div id="fullPreviewModal" class="fixed inset-0 bg-gray-900/95 hidden z-[99999] flex flex-col backdrop-blur-md p-2 md:p-6">
+        <div class="flex justify-between items-center bg-gray-800 text-white px-4 py-3 rounded-t-2xl shadow-lg border-b border-gray-700">
+            <h3 class="font-black text-base md:text-xl flex items-center"><i class="fa-solid fa-expand text-yellow-400 mr-2"></i> ফুল স্ক্রিন লাইভ প্রিভিউ</h3>
+            <div class="flex gap-2">
+                <button onclick="refreshFullScreenPreview()" class="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center"><i class="fa-solid fa-rotate-right mr-1"></i> রিফ্রেশ</button>
+                <button onclick="closeFullPreview()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded-lg text-xs font-bold transition flex items-center shadow-md"><i class="fa-solid fa-xmark mr-1"></i> বন্ধ করুন</button>
+            </div>
+        </div>
+        <div class="flex-1 bg-white rounded-b-2xl overflow-hidden shadow-2xl relative">
+            <iframe id="fullPreviewFrame" class="w-full h-full border-none bg-white"></iframe>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto space-y-5">
+        
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-800 text-white p-4 md:p-5 rounded-2xl shadow-xl flex items-center justify-between">
+            <div>
+                <h1 class="text-xl md:text-3xl font-black"><i class="fa-solid fa-wand-magic-sparkles text-yellow-400 mr-2"></i> স্মার্ট কোড আপডেটার <span class="bg-yellow-400 text-indigo-900 text-[10px] md:text-xs px-2 py-0.5 rounded-full ml-1 align-middle font-black uppercase">Pro Max v3</span></h1>
+                <p class="text-blue-100 text-[11px] md:text-sm mt-1 font-medium">আলাদা বাটন সিলেক্টর ও ইনস্ট্যান্ট রিয়েল-টাইম চেকার</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            
+            <!-- Left Side: Editor Section -->
+            <div class="lg:col-span-2 space-y-4">
+                
+                <!-- FILE SYSTEM MANAGER -->
+                <div class="glass p-4 rounded-2xl shadow-md border border-indigo-200 bg-indigo-50/30">
+                    <label class="block text-sm font-black text-indigo-800 mb-2"><i class="fa-regular fa-folder-open mr-1"></i> ফাইল ম্যানেজার (File System):</label>
+                    <div class="flex flex-col md:flex-row gap-3 items-center">
+                        <select id="fileSelector" onchange="switchFile()" class="w-full md:flex-1 border-2 border-indigo-300 rounded-lg p-2 text-sm font-bold focus:border-indigo-500 focus:outline-none bg-white text-gray-800 shadow-sm cursor-pointer transition">
+                            <!-- Files loaded dynamically -->
+                        </select>
+                        <div class="flex gap-2 w-full md:w-auto">
+                            <button onclick="createNewFile()" class="flex-1 md:flex-none bg-indigo-100 hover:bg-indigo-200 text-indigo-700 font-bold py-2 px-3 rounded-lg shadow-sm transition text-xs flex justify-center items-center">
+                                <i class="fa-solid fa-plus mr-1.5"></i> নতুন ফাইল
+                            </button>
+                            <button onclick="deleteCurrentFile()" class="flex-1 md:flex-none bg-red-100 hover:bg-red-200 text-red-700 font-bold py-2 px-3 rounded-lg shadow-sm transition text-xs flex justify-center items-center">
+                                <i class="fa-solid fa-trash-can mr-1.5"></i> ডিলিট
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Box 1: Main Code (CodeMirror Highlighted) -->
+                <div class="glass p-4 md:p-5 rounded-2xl shadow-lg border border-gray-200">
+                    <div class="flex flex-wrap justify-between items-center mb-3 gap-2">
+                        <label class="font-bold text-gray-800 text-base md:text-lg flex items-center"><span class="bg-blue-600 text-white w-5 h-5 md:w-6 md:h-6 flex justify-center items-center rounded-full text-xs mr-2 shadow">১</span> মেইন কোড (Syntax Highlighted)</label>
+                        
+                        <div class="flex gap-2 w-full md:w-auto mt-2 md:mt-0">
+                            <button onclick="copyMainCode()" class="flex-1 md:flex-none bg-blue-50 text-blue-700 hover:bg-blue-100 px-3 py-1.5 rounded-lg border border-blue-200 shadow-sm font-bold text-xs transition"><i class="fa-solid fa-copy mr-1"></i> Copy</button>
+                            <button onclick="clearMainCode()" class="flex-1 md:flex-none bg-red-50 text-red-600 hover:bg-red-100 px-3 py-1.5 rounded-lg border border-red-200 shadow-sm font-bold text-xs transition"><i class="fa-solid fa-eraser mr-1"></i> Clear</button>
+                            
+                            <label class="flex-1 md:flex-none cursor-pointer bg-green-50 text-green-700 hover:bg-green-100 px-3 py-1.5 rounded-lg border border-green-200 shadow-sm font-bold text-xs transition text-center">
+                                <i class="fa-solid fa-upload mr-1"></i> Upload
+                                <input type="file" id="fileInput" accept=".html,.js,.txt,.css,.md" class="hidden" onchange="loadFromFile(event)">
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <textarea id="mainCode"></textarea>
+                    
+                    <div class="flex justify-between mt-2">
+                        <span class="text-[10px] md:text-xs font-bold text-gray-500 bg-gray-100 px-2 py-1 rounded"><i class="fa-solid fa-file-lines mr-1 text-blue-500"></i> <span id="lineCount">0</span> লাইন</span>
+                        <span class="text-[10px] md:text-xs font-bold text-gray-500 bg-gray-100 px-2 py-1 rounded"><i class="fa-solid fa-weight-scale mr-1 text-indigo-500"></i> <span id="fileSize">0.00</span> KB</span>
+                    </div>
+                </div>
+
+                <!-- Update Settings (Two Separate Buttons for Single vs All + Replace vs Delete) -->
+                <div class="glass p-3 md:p-4 rounded-2xl shadow border border-gray-200 grid grid-cols-1 md:grid-cols-2 gap-3 items-center">
+                    
+                    <!-- Update Scope: Single vs All Buttons -->
+                    <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-200 flex items-center justify-between gap-2">
+                        <span class="font-bold text-xs md:text-sm text-gray-700"><i class="fa-solid fa-sliders text-blue-500 mr-1"></i> টার্গেট:</span>
+                        <div class="flex gap-1.5 flex-1 max-w-[220px]">
+                            <label class="flex-1 cursor-pointer text-center py-1.5 px-2 rounded-lg font-bold text-xs transition border shadow-sm bg-blue-600 text-white" id="labelSingle">
+                                <input type="radio" name="updateScope" value="single" checked onchange="updateScopeMode(); processCodeInstant();" class="hidden">
+                                শুধু ১মটি
+                            </label>
+                            <label class="flex-1 cursor-pointer text-center py-1.5 px-2 rounded-lg font-bold text-xs transition border shadow-sm bg-white text-gray-700 border-gray-300" id="labelAll">
+                                <input type="radio" name="updateScope" value="all" onchange="updateScopeMode(); processCodeInstant();" class="hidden">
+                                সবগুলো (All)
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Mode: Replace vs Delete -->
+                    <div class="flex gap-2">
+                        <label class="flex-1 cursor-pointer font-bold flex items-center justify-center gap-1.5 bg-blue-50 px-2 py-2 rounded-xl border border-blue-200 transition hover:bg-blue-100 text-xs md:text-sm shadow-sm" id="labelReplace">
+                            <input type="radio" name="mode" value="replace" checked onchange="toggleMode(); processCodeInstant();" class="w-4 h-4 accent-blue-600">
+                            <span class="text-blue-700">রিপ্লেস</span>
+                        </label>
+                        <label class="flex-1 cursor-pointer font-bold flex items-center justify-center gap-1.5 bg-white px-2 py-2 rounded-xl border border-gray-200 transition hover:bg-red-50 text-xs md:text-sm shadow-sm" id="labelDelete">
+                            <input type="radio" name="mode" value="delete" onchange="toggleMode(); processCodeInstant();" class="w-4 h-4 accent-red-600">
+                            <span class="text-gray-600" id="textDelete"><i class="fa-solid fa-trash-can"></i> ডিলিট</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Box 2: Old Code -->
+                <div class="glass p-3 md:p-4 rounded-2xl shadow border-t-4 border-red-500 relative flex flex-col">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="font-bold text-red-700 flex items-center text-sm md:text-base"><span class="bg-red-500 text-white w-5 h-5 flex justify-center items-center rounded-full text-[10px] md:text-xs mr-2 shadow">২</span> পুরোনো কোড (মুছবেন)</label>
+                        <button onclick="clearBox('oldCode')" class="text-[10px] md:text-xs bg-red-100 hover:bg-red-200 text-red-700 font-bold py-1 px-2 rounded border border-red-200 transition shadow-sm"><i class="fa-solid fa-eraser mr-1"></i> ক্লিয়ার</button>
+                    </div>
+                    <textarea id="oldCode" oninput="saveInputsTemporarily(); processCodeInstant();" class="w-full h-32 md:h-36 border-2 border-red-200 focus:border-red-500 rounded-xl p-2.5 font-mono text-[11px] md:text-sm outline-none bg-red-50 shadow-inner" placeholder="যে কোডটুকু মুছতে বা পরিবর্তন করতে চান..."></textarea>
+                </div>
+
+                <!-- Status Messages (Positioned right between Box 2 and Box 3) -->
+                <div id="statusArea" class="hidden p-3.5 rounded-xl font-bold border shadow-sm text-xs md:text-sm transition-all duration-300"></div>
+
+                <!-- Box 3: New Code -->
+                <div class="glass p-3 md:p-4 rounded-2xl shadow border-t-4 border-green-500 transition-all duration-300 relative flex flex-col" id="newCodeContainer">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="font-bold text-green-700 flex items-center text-sm md:text-base"><span class="bg-green-500 text-white w-5 h-5 flex justify-center items-center rounded-full text-[10px] md:text-xs mr-2 shadow">৩</span> নতুন কোড (বসাবেন)</label>
+                        <button onclick="clearBox('newCode')" class="text-[10px] md:text-xs bg-green-100 hover:bg-green-200 text-green-700 font-bold py-1 px-2 rounded border border-green-200 transition shadow-sm"><i class="fa-solid fa-eraser mr-1"></i> ক্লিয়ার</button>
+                    </div>
+                    <textarea id="newCode" oninput="saveInputsTemporarily(); processCodeInstant();" class="w-full h-32 md:h-36 border-2 border-green-200 focus:border-green-500 rounded-xl p-2.5 font-mono text-[11px] md:text-sm outline-none bg-green-50 shadow-inner" placeholder="নতুন কোডটুকু এখানে দিন..."></textarea>
+                </div>
+
+                <!-- Action Button -->
+                <button id="actionBtn" onclick="processCode()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-2xl shadow-xl text-lg md:text-xl transition transform hover:-translate-y-1 flex justify-center items-center gap-2">
+                    <i class="fa-solid fa-bolt text-yellow-300"></i> আপডেট করুন ও সেভ করুন
+                </button>
+            </div>
+
+            <!-- Right Side: Live Preview -->
+            <div class="space-y-4">
+                <div class="glass p-4 rounded-2xl shadow-lg border border-gray-200 lg:sticky top-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="font-bold text-gray-800 text-base md:text-lg flex items-center"><i class="fa-solid fa-mobile-screen-button text-blue-600 mr-2"></i> লাইভ প্রিভিউ</h2>
+                        <div class="flex gap-1.5">
+                            <button onclick="openFullPreview()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-2.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center shadow-sm" title="বড় স্ক্রিনে দেখুন"><i class="fa-solid fa-expand mr-1"></i> ফুল স্ক্রিন</button>
+                            <button onclick="refreshPreview()" class="bg-gray-100 text-gray-600 hover:bg-gray-200 p-1.5 rounded-lg text-xs font-bold transition" title="রিফ্রেশ"><i class="fa-solid fa-rotate-right"></i></button>
+                        </div>
+                    </div>
+                    
+                    <!-- Mobile Frame -->
+                    <div class="mx-auto border-[6px] md:border-[8px] border-gray-900 rounded-[2rem] overflow-hidden relative shadow-2xl bg-white w-full max-w-[320px] h-[500px] md:h-[600px]">
+                        <div class="absolute top-0 inset-x-0 h-4 md:h-5 bg-gray-900 z-10 rounded-b-xl w-24 md:w-28 mx-auto flex justify-center items-center gap-2">
+                            <div class="w-8 md:w-10 h-1 bg-gray-800 rounded-full"></div>
+                        </div>
+                        <div id="previewLoader" class="absolute inset-0 flex flex-col items-center justify-center bg-gray-50 z-0">
+                            <i class="fa-solid fa-laptop-code text-3xl md:text-4xl text-gray-300 mb-2"></i>
+                            <span class="text-[10px] md:text-xs font-bold text-gray-400">কোড লেখার সাথে সাথে এখানে সাইট দেখা যাবে</span>
+                        </div>
+                        <iframe id="previewFrame" class="w-full h-full border-none relative z-0 bg-white hidden"></iframe>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        let editor;
+        let fileSystem = {};
+        let currentFileName = "index.html";
+
+        window.onload = function() {
+            editor = CodeMirror.fromTextArea(document.getElementById("mainCode"), {
+                mode: "htmlmixed",
+                theme: "default",
+                lineNumbers: true,
+                lineWrapping: true,
+                autoCloseTags: true,
+                matchBrackets: true
+            });
+
+            editor.on("change", function() {
+                saveCurrentFileToSystem();
+                updateStats();
+                updateLivePreviewOnFly();
+                processCodeInstant();
+            });
+
+            let savedFS = localStorage.getItem('ultraWorkspaceFilesV3');
+            if(savedFS) { fileSystem = JSON.parse(savedFS); } 
+            else { fileSystem["index.html"] = ""; }
+            
+            let lastFile = localStorage.getItem('ultraCurrentFileNameV3');
+            if(lastFile && fileSystem[lastFile] !== undefined) { currentFileName = lastFile; } 
+            else { currentFileName = Object.keys(fileSystem)[0]; }
+
+            updateFileSelectorUI();
+            loadFileIntoBox(currentFileName);
+            
+            document.getElementById('oldCode').value = localStorage.getItem('tempOldCodeV3') || "";
+            document.getElementById('newCode').value = localStorage.getItem('tempNewCodeV3') || "";
+            
+            processCodeInstant();
+        };
+
+        function saveInputsTemporarily() {
+            localStorage.setItem('tempOldCodeV3', document.getElementById('oldCode').value);
+            localStorage.setItem('tempNewCodeV3', document.getElementById('newCode').value);
+        }
+
+        function clearBox(boxId) {
+            document.getElementById(boxId).value = "";
+            saveInputsTemporarily();
+            processCodeInstant();
+        }
+
+        function updateFileSelectorUI() {
+            let selector = document.getElementById('fileSelector');
+            selector.innerHTML = '';
+            for(let fName in fileSystem) {
+                let option = document.createElement('option');
+                option.value = fName;
+                option.text = fName;
+                if(fName === currentFileName) option.selected = true;
+                selector.appendChild(option);
+            }
+        }
+
+        function switchFile() {
+            let selector = document.getElementById('fileSelector');
+            currentFileName = selector.value;
+            localStorage.setItem('ultraCurrentFileNameV3', currentFileName);
+            loadFileIntoBox(currentFileName);
+            hideStatus();
+        }
+
+        function loadFileIntoBox(fName) {
+            editor.setValue(fileSystem[fName] || "");
+            updateStats();
+            updateLivePreviewOnFly();
+        }
+
+        function saveCurrentFileToSystem() {
+            let code = editor.getValue();
+            fileSystem[currentFileName] = code;
+            localStorage.setItem('ultraWorkspaceFilesV3', JSON.stringify(fileSystem));
+        }
+
+        function createNewFile() {
+            let newName = prompt("নতুন ফাইলের নাম দিন (যেমন: style.css):", "new_file.html");
+            if(newName && newName.trim() !== "") {
+                if(fileSystem[newName] !== undefined) {
+                    showStatus('error', "এই নামে একটি ফাইল আগে থেকেই আছে!");
+                    return;
+                }
+                fileSystem[newName] = "";
+                currentFileName = newName;
+                localStorage.setItem('ultraWorkspaceFilesV3', JSON.stringify(fileSystem));
+                localStorage.setItem('ultraCurrentFileNameV3', currentFileName);
+                updateFileSelectorUI();
+                loadFileIntoBox(currentFileName);
+            }
+        }
+
+        function deleteCurrentFile() {
+            let keys = Object.keys(fileSystem);
+            if(keys.length <= 1) {
+                showStatus('error', "আপনার ওয়ার্কস্পেসে অন্তত একটি ফাইল থাকতে হবে!");
+                return;
+            }
+            if(confirm(`আপনি কি নিশ্চিত যে '${currentFileName}' ফাইলটি ডিলিট করতে চান?`)) {
+                delete fileSystem[currentFileName];
+                currentFileName = Object.keys(fileSystem)[0]; 
+                localStorage.setItem('ultraWorkspaceFilesV3', JSON.stringify(fileSystem));
+                localStorage.setItem('ultraCurrentFileNameV3', currentFileName);
+                updateFileSelectorUI();
+                loadFileIntoBox(currentFileName);
+            }
+        }
+
+        function copyMainCode() {
+            const code = editor.getValue();
+            if(!code) return;
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = event.currentTarget;
+                const oldHtml = btn.innerHTML;
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+                setTimeout(() => { btn.innerHTML = oldHtml; }, 1500);
+            });
+        }
+
+        function clearMainCode() {
+            if(confirm("মেইন কোডটি সম্পূর্ণ মুছে ফেলতে চান?")) {
+                editor.setValue('');
+                saveCurrentFileToSystem();
+            }
+        }
+
+        function updateStats() {
+            const code = editor.getValue();
+            const lines = code ? code.split('\n').length : 0;
+            const kbSize = code ? (new Blob([code]).size / 1024).toFixed(2) : '0.00';
+            document.getElementById('lineCount').innerText = lines;
+            document.getElementById('fileSize').innerText = kbSize;
+        }
+
+        function updateLivePreviewOnFly() {
+            const code = editor.getValue();
+            const frame = document.getElementById('previewFrame');
+            const loader = document.getElementById('previewLoader');
+            if(code.trim() !== "") {
+                loader.style.display = 'none';
+                frame.classList.remove('hidden');
+                frame.srcdoc = code;
+            } else {
+                loader.style.display = 'flex';
+                frame.classList.add('hidden');
+            }
+        }
+
+        function openFullPreview() {
+            const code = editor.getValue();
+            if(!code.trim()) {
+                showStatus('error', "প্রিভিউ দেখার জন্য কোনো কোড নেই!");
+                return;
+            }
+            document.getElementById('fullPreviewModal').classList.remove('hidden');
+            document.getElementById('fullPreviewFrame').srcdoc = code;
+        }
+
+        function closeFullPreview() {
+            document.getElementById('fullPreviewModal').classList.add('hidden');
+        }
+
+        function refreshFullScreenPreview() {
+            const code = editor.getValue();
+            document.getElementById('fullPreviewFrame').srcdoc = code;
+        }
+
+        function loadFromFile(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    editor.setValue(e.target.result);
+                    saveCurrentFileToSystem();
+                    showStatus('success', '✅ ফাইল সফলভাবে আপলোড হয়েছে!');
+                };
+                reader.readAsText(file);
+            }
+            event.target.value = '';
+        }
+
+        // Toggle Scope UI (Single vs All Buttons)
+        function updateScopeMode() {
+            const scope = document.querySelector('input[name="updateScope"]:checked').value;
+            const lblSingle = document.getElementById('labelSingle');
+            const lblAll = document.getElementById('labelAll');
+
+            if(scope === 'single') {
+                lblSingle.className = "flex-1 cursor-pointer text-center py-1.5 px-2 rounded-lg font-bold text-xs transition border shadow-sm bg-blue-600 text-white";
+                lblAll.className = "flex-1 cursor-pointer text-center py-1.5 px-2 rounded-lg font-bold text-xs transition border shadow-sm bg-white text-gray-700 border-gray-300";
+            } else {
+                lblAll.className = "flex-1 cursor-pointer text-center py-1.5 px-2 rounded-lg font-bold text-xs transition border shadow-sm bg-purple-600 text-white";
+                lblSingle.className = "flex-1 cursor-pointer text-center py-1.5 px-2 rounded-lg font-bold text-xs transition border shadow-sm bg-white text-gray-700 border-gray-300";
+            }
+        }
+
+        function toggleMode() {
+            const isDelete = document.querySelector('input[name="mode"]:checked').value === 'delete';
+            const newCodeContainer = document.getElementById('newCodeContainer');
+            const btn = document.getElementById('actionBtn');
+            const labelReplace = document.getElementById('labelReplace');
+            const labelDelete = document.getElementById('labelDelete');
+            const textDelete = document.getElementById('textDelete');
+            
+            if (isDelete) {
+                newCodeContainer.style.opacity = '0';
+                setTimeout(() => newCodeContainer.style.display = 'none', 300);
+                
+                labelReplace.className = "flex-1 cursor-pointer font-bold flex items-center justify-center gap-1.5 bg-white px-2 py-2 rounded-xl border border-gray-200 transition hover:bg-blue-50 text-xs md:text-sm shadow-sm";
+                labelReplace.querySelector('span').className = "text-gray-600";
+                
+                labelDelete.className = "flex-1 cursor-pointer font-bold flex items-center justify-center gap-1.5 bg-red-50 px-2 py-2 rounded-xl border border-red-200 transition text-xs md:text-sm shadow-sm";
+                textDelete.className = "text-red-700";
+                
+                btn.className = "w-full bg-red-600 hover:bg-red-700 text-white font-black py-4 rounded-2xl shadow-xl text-lg md:text-xl transition transform hover:-translate-y-1 flex justify-center items-center gap-2";
+                btn.innerHTML = '<i class="fa-solid fa-trash-can text-white"></i> শুধু কোড ডিলিট করুন';
+            } else {
+                newCodeContainer.style.display = 'block';
+                setTimeout(() => newCodeContainer.style.opacity = '1', 10);
+                
+                labelDelete.className = "flex-1 cursor-pointer font-bold flex items-center justify-center gap-1.5 bg-white px-2 py-2 rounded-xl border border-gray-200 transition hover:bg-red-50 text-xs md:text-sm shadow-sm";
+                textDelete.className = "text-gray-600";
+                
+                labelReplace.className = "flex-1 cursor-pointer font-bold flex items-center justify-center gap-1.5 bg-blue-50 px-2 py-2 rounded-xl border border-blue-200 transition text-xs md:text-sm shadow-sm";
+                labelReplace.querySelector('span').className = "text-blue-700";
+                
+                btn.className = "w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-2xl shadow-xl text-lg md:text-xl transition transform hover:-translate-y-1 flex justify-center items-center gap-2";
+                btn.innerHTML = '<i class="fa-solid fa-bolt text-yellow-300"></i> আপডেট করুন ও সেভ করুন';
+            }
+        }
+
+        function checkSyntax(code) {
+            let openBraces = (code.match(/\{/g) || []).length;
+            let closeBraces = (code.match(/\}/g) || []).length;
+            let openParens = (code.match(/\(/g) || []).length;
+            let closeParens = (code.match(/\)/g) || []).length;
+            
+            let errors = [];
+            if(openBraces !== closeBraces) errors.push(`ব্র্যাকেট <b>{ }</b> মুছে গেছে বা অতিরিক্ত বসেছে!`);
+            if(openParens !== closeParens) errors.push(`ব্র্যাকেট <b>( )</b> মুছে গেছে বা অতিরিক্ত বসেছে!`);
+            return errors;
+        }
+
+        function escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        function processCodeInstant() {
+            let mainCode = editor.getValue();
+            let oldCode = document.getElementById('oldCode').value;
+            const isDelete = document.querySelector('input[name="mode"]:checked').value === 'delete';
+            const newCode = isDelete ? '' : document.getElementById('newCode').value;
+            const scope = document.querySelector('input[name="updateScope"]:checked').value;
+            const isUpdateAll = (scope === 'all');
+
+            if(!mainCode.trim() || !oldCode.trim()) {
+                hideStatus();
+                return;
+            }
+
+            let escapedOldCode = escapeRegExp(oldCode);
+            let regexFlags = isUpdateAll ? 'g' : '';
+            let smartRegex = new RegExp(escapedOldCode.replace(/\s+/g, '\\s+'), regexFlags);
+            let checkRegex = new RegExp(escapedOldCode.replace(/\s+/g, '\\s+'));
+
+            if (!checkRegex.test(mainCode)) {
+                showStatus('warning', '<i class="fa-solid fa-triangle-exclamation mr-1"></i> ২ নম্বর বক্সের পুরোনো কোডটি ১ নম্বর মেইন কোডের ভেতরে এখনো পাওয়া যায়নি। কোড ঠিকমতো দিন।');
+                return;
+            }
+
+            let matchCount = (mainCode.match(new RegExp(escapedOldCode.replace(/\s+/g, '\\s+'), 'g')) || []).length;
+            let updatedCode = mainCode.replace(smartRegex, newCode);
+            let syntaxErrors = checkSyntax(updatedCode);
+            
+            if(syntaxErrors.length > 0) {
+                showStatus('error', `<i class="fa-solid fa-bug mr-1"></i> <b>সতর্কতা! কোডে ভুল হতে পারে:</b> ${syntaxErrors.join(' | ')}`);
+                return;
+            }
+
+            let matchText = isUpdateAll && matchCount > 1 ? `কোডটি ${matchCount} জায়গায় মিলেছে এবং সবগুলো একসাথে আপডেট হবে!` : `কোড ম্যাচ করেছে!`;
+            showStatus('success', `<i class="fa-solid fa-circle-check mr-1"></i> ${matchText} আপডেট বাটনে চাপ দিয়ে সেভ করুন।`);
+        }
+
+        function processCode() {
+            let mainCode = editor.getValue();
+            let oldCode = document.getElementById('oldCode').value;
+            const isDelete = document.querySelector('input[name="mode"]:checked').value === 'delete';
+            const newCode = isDelete ? '' : document.getElementById('newCode').value;
+            const scope = document.querySelector('input[name="updateScope"]:checked').value;
+            const isUpdateAll = (scope === 'all');
+
+            if(!mainCode.trim()) {
+                showStatus('error', '<i class="fa-solid fa-circle-xmark mr-1"></i> <b>মেইন কোড বক্স খালি!</b>');
+                return;
+            }
+
+            if(!oldCode.trim()) {
+                showStatus('warning', '<i class="fa-solid fa-triangle-exclamation mr-1"></i> <b>পুরোনো কোড বক্স খালি!</b>');
+                return;
+            }
+
+            let escapedOldCode = escapeRegExp(oldCode);
+            let regexFlags = isUpdateAll ? 'g' : '';
+            let smartRegex = new RegExp(escapedOldCode.replace(/\s+/g, '\\s+'), regexFlags);
+            let checkRegex = new RegExp(escapedOldCode.replace(/\s+/g, '\\s+'));
+
+            if (!checkRegex.test(mainCode)) {
+                showStatus('error', '<i class="fa-solid fa-circle-xmark mr-1"></i> <b>কোড পাওয়া যায়নি!</b> ২ নম্বর বক্সের পুরোনো কোডটি ১ নম্বর মেইন কোডের ভেতরে নেই।');
+                return;
+            }
+
+            let updatedCode = mainCode.replace(smartRegex, newCode);
+
+            let syntaxErrors = checkSyntax(updatedCode);
+            if(syntaxErrors.length > 0) {
+                showStatus('error', `<i class="fa-solid fa-bug mr-1"></i> <b>বিপাদ! কোডে ভুল আছে:</b><br> ${syntaxErrors.join('<br>')}`);
+                return;
+            }
+
+            editor.setValue(updatedCode);
+            saveCurrentFileToSystem();
+            updateStats();
+
+            showStatus('success', `<i class="fa-solid fa-circle-check mr-1"></i> ম্যাজিক! কোড <b>${isDelete ? 'ডিলিট' : 'আপডেট'}</b> হয়ে ফাইলে সেভ হয়েছে!`);
+            
+            clearBox('oldCode');
+            if(!isDelete) { clearBox('newCode'); }
+            
+            updateLivePreviewOnFly();
+        }
+
+        function refreshPreview() {
+            updateLivePreviewOnFly();
+            const icon = event.currentTarget.querySelector('i');
+            icon.classList.add('fa-spin');
+            setTimeout(() => icon.classList.remove('fa-spin'), 1000);
+        }
+
+        function showStatus(type, text) {
+            const area = document.getElementById('statusArea');
+            area.style.display = 'block';
+            area.innerHTML = text;
+            if(type === 'success') { area.className = "mt-2 mb-2 p-3.5 rounded-xl font-medium bg-green-100 text-green-800 border border-green-300 shadow-sm text-xs md:text-sm"; } 
+            else if(type === 'error') { area.className = "mt-2 mb-2 p-3.5 rounded-xl font-medium bg-red-100 text-red-800 border border-red-300 shadow-sm text-xs md:text-sm"; } 
+            else { area.className = "mt-2 mb-2 p-3.5 rounded-xl font-medium bg-yellow-100 text-yellow-800 border border-yellow-300 shadow-sm text-xs md:text-sm"; }
+        }
+
+        function hideStatus() {
+            document.getElementById('statusArea').style.display = 'none';
+        }
+    </script>
+</body>
+  </html>
