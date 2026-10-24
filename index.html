@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="bn" id="htmlElement">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>স্মার্ট কোড আপডেটার - Ultimate Pro Max v4</title>
+    <title>স্মার্ট কোড আপডেটার - Ultimate Pro Max v7</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -14,7 +15,7 @@
     <!-- FontAwesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
-    <!-- CodeMirror Core (For Syntax Highlighting & Fullscreen & Search) -->
+    <!-- CodeMirror Core -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/display/fullscreen.min.css">
@@ -25,27 +26,30 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/css/css.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/htmlmixed/htmlmixed.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/display/fullscreen.min.js"></script>
-    
-    <!-- CodeMirror Search Cursor Addon (NEW for Search Feature) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/search/searchcursor.min.js"></script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700;900&display=swap');
         
-        /* Stop Pull-to-Refresh & Box Clearing on Mobile Pull strictly */
         :root { overscroll-behavior: none; touch-action: pan-y; }
         html, body { overscroll-behavior: none; overscroll-behavior-y: none; font-family: 'Hind Siliguri', sans-serif; background-color: #f0f4f8; -webkit-overflow-scrolling: touch; }
         
         .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
         
-        /* CodeMirror Custom Height & Styling */
         .CodeMirror { height: 350px; border-radius: 0.75rem; font-family: 'Courier New', Courier, monospace; font-size: 13px; z-index: 5; border: 2px solid #cbd5e1; }
         .CodeMirror-fullscreen { z-index: 9999 !important; border-radius: 0 !important; }
         
-        /* Highlight selection specifically to make search visible */
+        /* Highlight specific selection */
         .CodeMirror-selected { background: #b3d4fc !important; }
         .CodeMirror-focused .CodeMirror-selected { background: #b3d4fc !important; }
         
+        /* Live Highlight Class for Search */
+        .search-highlight { 
+            background-color: rgba(250, 204, 21, 0.5); /* Yellow overlay */
+            outline: 2px solid #eab308; /* Yellow border */
+            border-radius: 2px;
+        }
+
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
@@ -72,8 +76,8 @@
         <!-- Header -->
         <div class="bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-800 text-white p-4 md:p-5 rounded-2xl shadow-xl flex items-center justify-between">
             <div>
-                <h1 class="text-xl md:text-3xl font-black"><i class="fa-solid fa-wand-magic-sparkles text-yellow-400 mr-2"></i> স্মার্ট কোড আপডেটার <span class="bg-yellow-400 text-indigo-900 text-[10px] md:text-xs px-2 py-0.5 rounded-full ml-1 align-middle font-black uppercase">v4 Search</span></h1>
-                <p class="text-blue-100 text-[11px] md:text-sm mt-1 font-medium">স্মার্ট সার্চ বার এবং অটো ২ নং বক্সে পাঠানোর সিস্টেম</p>
+                <h1 class="text-xl md:text-3xl font-black"><i class="fa-solid fa-wand-magic-sparkles text-yellow-400 mr-2"></i> স্মার্ট কোড আপডেটার <span class="bg-yellow-400 text-indigo-900 text-[10px] md:text-xs px-2 py-0.5 rounded-full ml-1 align-middle font-black uppercase">v7 Fast Edit</span></h1>
+                <p class="text-blue-100 text-[11px] md:text-sm mt-1 font-medium">হাত দিয়ে টেনে সিলেক্ট করুন এবং এক ক্লিকেই ফাস্ট ডিলিট করুন!</p>
             </div>
         </div>
 
@@ -100,12 +104,15 @@
                     </div>
                 </div>
 
-                <!-- Box 1: Main Code (CodeMirror Highlighted) -->
+                <!-- Box 1: Main Code -->
                 <div class="glass p-4 md:p-5 rounded-2xl shadow-lg border border-gray-200">
                     <div class="flex flex-wrap justify-between items-center mb-3 gap-2">
                         <label class="font-bold text-gray-800 text-base md:text-lg flex items-center"><span class="bg-blue-600 text-white w-5 h-5 md:w-6 md:h-6 flex justify-center items-center rounded-full text-xs mr-2 shadow">১</span> মেইন কোড (Syntax Highlighted)</label>
                         
                         <div class="flex gap-2 w-full md:w-auto mt-2 md:mt-0">
+                            <!-- NEW: Undo Button added here -->
+                            <button onclick="editor.undo()" class="flex-1 md:flex-none bg-yellow-50 text-yellow-700 hover:bg-yellow-100 px-3 py-1.5 rounded-lg border border-yellow-200 shadow-sm font-bold text-xs transition" title="আগের অবস্থায় ফিরুন"><i class="fa-solid fa-rotate-left mr-1"></i> Undo</button>
+                            
                             <button onclick="copyMainCode()" class="flex-1 md:flex-none bg-blue-50 text-blue-700 hover:bg-blue-100 px-3 py-1.5 rounded-lg border border-blue-200 shadow-sm font-bold text-xs transition"><i class="fa-solid fa-copy mr-1"></i> Copy</button>
                             <button onclick="clearMainCode()" class="flex-1 md:flex-none bg-red-50 text-red-600 hover:bg-red-100 px-3 py-1.5 rounded-lg border border-red-200 shadow-sm font-bold text-xs transition"><i class="fa-solid fa-eraser mr-1"></i> Clear</button>
                             
@@ -116,19 +123,28 @@
                         </div>
                     </div>
                     
-                    <!-- NEW: Search & Select Bar -->
-                    <div class="flex gap-2 mb-3 items-center bg-blue-50/50 p-2 rounded-xl border border-blue-200">
-                        <div class="relative flex-1">
-                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-blue-500"></i>
-                            <input type="text" id="searchInput" placeholder="কোড খুঁজুন (Search)..." class="w-full pl-9 pr-3 py-2 rounded-lg border border-blue-300 focus:border-blue-500 text-xs md:text-sm outline-none bg-white shadow-inner">
+                    <!-- Advanced Search & Live Highlight Bar -->
+                    <div class="mb-3 bg-blue-50 p-2 rounded-xl border border-blue-200 shadow-sm">
+                        <label class="block text-[10px] font-bold text-blue-700 mb-1 ml-1"><i class="fa-solid fa-hand-pointer"></i> সার্চ করুন অথবা হাত দিয়ে কোড সিলেক্ট করুন:</label>
+                        <div class="flex flex-col md:flex-row gap-2">
+                            <div class="relative flex-1">
+                                <textarea id="searchInput" rows="2" placeholder="যে কোডটি খুঁজছেন তা পেস্ট করুন, অথবা নিচে থেকে হাত দিয়ে টেনে সিলেক্ট করুন..." class="w-full px-3 py-2 rounded-lg border border-blue-300 focus:border-blue-500 text-xs md:text-sm outline-none bg-white shadow-inner resize-y min-h-[40px] max-h-[150px]" oninput="highlightMatches()"></textarea>
+                            </div>
+                            <div class="flex gap-1 items-start hidden md:flex">
+                                <button onclick="findPrev()" class="bg-blue-600 text-white px-3 py-2.5 rounded-lg font-bold text-xs hover:bg-blue-700 shadow-sm transition h-[40px]" title="আগেরটি খুঁজুন"><i class="fa-solid fa-arrow-up"></i></button>
+                                <button onclick="findNext()" class="bg-blue-600 text-white px-3 py-2.5 rounded-lg font-bold text-xs hover:bg-blue-700 shadow-sm transition h-[40px]" title="পরেরটি খুঁজুন"><i class="fa-solid fa-arrow-down"></i></button>
+                            </div>
+                            <div class="flex gap-2 w-full md:w-auto items-start">
+                                <button onclick="copyToBox2()" class="flex-1 md:flex-none bg-indigo-500 text-white px-3 py-2.5 rounded-lg font-bold text-xs hover:bg-indigo-600 shadow-sm flex items-center justify-center gap-1.5 transition whitespace-nowrap h-[40px]" title="সিলেক্ট করা কোড ২ নং বক্সে পাঠান">
+                                    <i class="fa-solid fa-share"></i> <span class="md:inline">২ নং বক্সে দিন</span>
+                                </button>
+                                <!-- FAST DELETE BUTTON -->
+                                <button onclick="deleteSelectedCode()" class="flex-1 md:flex-none bg-red-500 text-white px-3 py-2.5 rounded-lg font-bold text-xs hover:bg-red-600 shadow-sm flex items-center justify-center gap-1.5 transition whitespace-nowrap h-[40px]" title="এক ক্লিকে সরাসরি ডিলিট করুন">
+                                    <i class="fa-solid fa-trash-can"></i> <span class="md:inline">সরাসরি ডিলিট</span>
+                                </button>
+                            </div>
                         </div>
-                        <div class="flex gap-1">
-                            <button onclick="findPrev()" class="bg-blue-600 text-white px-3 py-2 rounded-lg font-bold text-xs hover:bg-blue-700 shadow-sm transition" title="আগেরটি খুঁজুন"><i class="fa-solid fa-arrow-up"></i></button>
-                            <button onclick="findNext()" class="bg-blue-600 text-white px-3 py-2 rounded-lg font-bold text-xs hover:bg-blue-700 shadow-sm transition" title="পরেরটি খুঁজুন"><i class="fa-solid fa-arrow-down"></i></button>
-                        </div>
-                        <button onclick="copyToBox2()" class="bg-red-500 text-white px-3 py-2 rounded-lg font-bold text-xs hover:bg-red-600 shadow-sm flex items-center gap-1.5 transition whitespace-nowrap" title="সিলেক্ট করা কোড ২ নং বক্সে পাঠান">
-                            <i class="fa-solid fa-share"></i> <span class="hidden md:inline">২ নং বক্সে দিন</span>
-                        </button>
+                        <div id="searchMatchCount" class="text-[10px] font-bold text-blue-600 mt-1 ml-1 hidden"></div>
                     </div>
 
                     <textarea id="mainCode"></textarea>
@@ -139,7 +155,7 @@
                     </div>
                 </div>
 
-                <!-- Update Settings (Two Separate Buttons for Single vs All + Replace vs Delete) -->
+                <!-- Update Settings -->
                 <div class="glass p-3 md:p-4 rounded-2xl shadow border border-gray-200 grid grid-cols-1 md:grid-cols-2 gap-3 items-center">
                     
                     <!-- Update Scope: Single vs All Buttons -->
@@ -179,7 +195,7 @@
                     <textarea id="oldCode" oninput="saveInputsTemporarily(); processCodeInstant();" class="w-full h-32 md:h-36 border-2 border-red-200 focus:border-red-500 rounded-xl p-2.5 font-mono text-[11px] md:text-sm outline-none bg-red-50 shadow-inner" placeholder="যে কোডটুকু মুছতে বা পরিবর্তন করতে চান..."></textarea>
                 </div>
 
-                <!-- Status Messages (Positioned right between Box 2 and Box 3) -->
+                <!-- Status Messages -->
                 <div id="statusArea" class="hidden p-3.5 rounded-xl font-bold border shadow-sm text-xs md:text-sm transition-all duration-300"></div>
 
                 <!-- Box 3: New Code -->
@@ -231,6 +247,7 @@
         let currentFileName = "index.html";
         let searchCursor = null;
         let lastQuery = null;
+        let currentMarkers = [];
 
         window.onload = function() {
             editor = CodeMirror.fromTextArea(document.getElementById("mainCode"), {
@@ -247,39 +264,79 @@
                 updateStats();
                 updateLivePreviewOnFly();
                 processCodeInstant();
+                highlightMatches();
             });
 
-            // Enter key on search input triggers Find Next
-            document.getElementById('searchInput').addEventListener('keypress', function (e) {
-                if (e.key === 'Enter') {
-                    findNext();
-                }
-            });
-
-            let savedFS = localStorage.getItem('ultraWorkspaceFilesV4');
+            let savedFS = localStorage.getItem('ultraWorkspaceFilesV7');
             if(savedFS) { fileSystem = JSON.parse(savedFS); } 
             else { fileSystem["index.html"] = ""; }
             
-            let lastFile = localStorage.getItem('ultraCurrentFileNameV4');
+            let lastFile = localStorage.getItem('ultraCurrentFileNameV7');
             if(lastFile && fileSystem[lastFile] !== undefined) { currentFileName = lastFile; } 
             else { currentFileName = Object.keys(fileSystem)[0]; }
 
             updateFileSelectorUI();
             loadFileIntoBox(currentFileName);
             
-            document.getElementById('oldCode').value = localStorage.getItem('tempOldCodeV4') || "";
-            document.getElementById('newCode').value = localStorage.getItem('tempNewCodeV4') || "";
+            document.getElementById('oldCode').value = localStorage.getItem('tempOldCodeV7') || "";
+            document.getElementById('newCode').value = localStorage.getItem('tempNewCodeV7') || "";
             
             processCodeInstant();
         };
 
-        // --- NEW: Search & Select Logic ---
+        function escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        function getSearchRegex(query) {
+            const escaped = escapeRegExp(query).replace(/\s+/g, '\\s+');
+            return new RegExp(escaped, 'g');
+        }
+
+        function highlightMatches() {
+            currentMarkers.forEach(marker => marker.clear());
+            currentMarkers = [];
+            
+            const query = document.getElementById('searchInput').value;
+            const countDisplay = document.getElementById('searchMatchCount');
+            
+            if (!query.trim()) {
+                countDisplay.classList.add('hidden');
+                return;
+            }
+            
+            const regex = getSearchRegex(query);
+            const cursor = editor.getSearchCursor(regex);
+            let count = 0;
+            
+            while (cursor.findNext()) {
+                currentMarkers.push(editor.markText(cursor.from(), cursor.to(), { className: "search-highlight" }));
+                count++;
+            }
+            
+            if (count > 0) {
+                countDisplay.innerHTML = `<i class="fa-solid fa-check-circle text-green-600"></i> মেইন কোডের ${count} জায়গায় পাওয়া গেছে (হলুদ রঙে হাইলাইট করা হয়েছে)`;
+                countDisplay.classList.remove('hidden', 'text-red-600');
+                countDisplay.classList.add('text-green-700');
+                
+                if(query !== lastQuery && currentMarkers.length > 0) {
+                    editor.scrollIntoView(currentMarkers[0].find(), 100);
+                }
+            } else {
+                countDisplay.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> মেইন কোডের কোথাও পাওয়া যায়নি!`;
+                countDisplay.classList.remove('hidden', 'text-green-700');
+                countDisplay.classList.add('text-red-600');
+            }
+            
+            lastQuery = query;
+        }
+
         function findNext() {
             const query = document.getElementById('searchInput').value;
-            if (!query) return;
+            if (!query.trim()) return;
             
             if (query !== lastQuery || !searchCursor) {
-                searchCursor = editor.getSearchCursor(query);
+                searchCursor = editor.getSearchCursor(getSearchRegex(query));
                 lastQuery = query;
             }
             
@@ -287,24 +344,21 @@
                 editor.setSelection(searchCursor.from(), searchCursor.to());
                 editor.scrollIntoView({from: searchCursor.from(), to: searchCursor.to()}, 100);
             } else {
-                // Wrap around
-                searchCursor = editor.getSearchCursor(query);
+                searchCursor = editor.getSearchCursor(getSearchRegex(query));
                 if (searchCursor.findNext()) {
                     editor.setSelection(searchCursor.from(), searchCursor.to());
                     editor.scrollIntoView({from: searchCursor.from(), to: searchCursor.to()}, 100);
                     showStatus('success', 'আবার প্রথম থেকে খোঁজা হচ্ছে।');
-                } else {
-                    showStatus('warning', '<i class="fa-solid fa-triangle-exclamation"></i> কোডটি পাওয়া যায়নি!');
                 }
             }
         }
 
         function findPrev() {
             const query = document.getElementById('searchInput').value;
-            if (!query) return;
+            if (!query.trim()) return;
             
             if (query !== lastQuery || !searchCursor) {
-                searchCursor = editor.getSearchCursor(query);
+                searchCursor = editor.getSearchCursor(getSearchRegex(query));
                 lastQuery = query;
             }
             
@@ -312,8 +366,7 @@
                 editor.setSelection(searchCursor.from(), searchCursor.to());
                 editor.scrollIntoView({from: searchCursor.from(), to: searchCursor.to()}, 100);
             } else {
-                // Wrap around to end
-                searchCursor = editor.getSearchCursor(query, {line: editor.lineCount() - 1, ch: 0});
+                searchCursor = editor.getSearchCursor(getSearchRegex(query), {line: editor.lineCount() - 1, ch: 0});
                 if (searchCursor.findPrevious()) {
                     editor.setSelection(searchCursor.from(), searchCursor.to());
                     editor.scrollIntoView({from: searchCursor.from(), to: searchCursor.to()}, 100);
@@ -323,21 +376,46 @@
         }
 
         function copyToBox2() {
-            const selectedText = editor.getSelection();
+            const query = document.getElementById('searchInput').value;
+            let selectedText = editor.getSelection();
+            
+            if (!selectedText && query.trim()) {
+                selectedText = query;
+            }
+            
             if (selectedText) {
                 document.getElementById('oldCode').value = selectedText;
                 saveInputsTemporarily();
                 processCodeInstant();
-                showStatus('success', '<i class="fa-solid fa-share"></i> সিলেক্ট করা কোড ২ নম্বর বক্সে পাঠানো হয়েছে!');
+                showStatus('success', '<i class="fa-solid fa-share"></i> কোড ২ নম্বর বক্সে পাঠানো হয়েছে!');
             } else {
-                showStatus('warning', '<i class="fa-solid fa-hand-pointer"></i> আগে মেইন কোড থেকে নির্দিষ্ট অংশ সিলেক্ট করুন!');
+                showStatus('warning', '<i class="fa-solid fa-hand-pointer"></i> আগে সার্চ বক্সে কোড দিন বা মেইন কোড হাত দিয়ে টেনে সিলেক্ট করুন!');
             }
         }
-        // ----------------------------------
+
+        function deleteSelectedCode() {
+            const query = document.getElementById('searchInput').value;
+            let selectedText = editor.getSelection();
+            
+            if (!selectedText && query.trim()) {
+                findNext();
+                selectedText = editor.getSelection();
+            }
+
+            if (selectedText) {
+                // Removed confirm() for Instant 1-Click Delete!
+                editor.replaceSelection("");
+                saveCurrentFileToSystem();
+                highlightMatches();
+                showStatus('success', '<i class="fa-solid fa-trash-can"></i> কোড সরাসরি মুছে ফেলা হয়েছে! (ভুল হলে Undo বাটনে চাপ দিন)');
+            } else {
+                showStatus('warning', '<i class="fa-solid fa-hand-pointer"></i> ডিলিট করার আগে মেইন কোড হাত দিয়ে টেনে সিলেক্ট করুন বা সার্চ করুন!');
+            }
+        }
 
         function saveInputsTemporarily() {
-            localStorage.setItem('tempOldCodeV4', document.getElementById('oldCode').value);
-            localStorage.setItem('tempNewCodeV4', document.getElementById('newCode').value);
+            localStorage.setItem('tempOldCodeV7', document.getElementById('oldCode').value);
+            localStorage.setItem('tempNewCodeV7', document.getElementById('newCode').value);
         }
 
         function clearBox(boxId) {
@@ -361,9 +439,11 @@
         function switchFile() {
             let selector = document.getElementById('fileSelector');
             currentFileName = selector.value;
-            localStorage.setItem('ultraCurrentFileNameV4', currentFileName);
+            localStorage.setItem('ultraCurrentFileNameV7', currentFileName);
             loadFileIntoBox(currentFileName);
             hideStatus();
+            document.getElementById('searchInput').value = ""; 
+            highlightMatches();
         }
 
         function loadFileIntoBox(fName) {
@@ -375,7 +455,7 @@
         function saveCurrentFileToSystem() {
             let code = editor.getValue();
             fileSystem[currentFileName] = code;
-            localStorage.setItem('ultraWorkspaceFilesV4', JSON.stringify(fileSystem));
+            localStorage.setItem('ultraWorkspaceFilesV7', JSON.stringify(fileSystem));
         }
 
         function createNewFile() {
@@ -387,8 +467,8 @@
                 }
                 fileSystem[newName] = "";
                 currentFileName = newName;
-                localStorage.setItem('ultraWorkspaceFilesV4', JSON.stringify(fileSystem));
-                localStorage.setItem('ultraCurrentFileNameV4', currentFileName);
+                localStorage.setItem('ultraWorkspaceFilesV7', JSON.stringify(fileSystem));
+                localStorage.setItem('ultraCurrentFileNameV7', currentFileName);
                 updateFileSelectorUI();
                 loadFileIntoBox(currentFileName);
             }
@@ -403,8 +483,8 @@
             if(confirm(`আপনি কি নিশ্চিত যে '${currentFileName}' ফাইলটি ডিলিট করতে চান?`)) {
                 delete fileSystem[currentFileName];
                 currentFileName = Object.keys(fileSystem)[0]; 
-                localStorage.setItem('ultraWorkspaceFilesV4', JSON.stringify(fileSystem));
-                localStorage.setItem('ultraCurrentFileNameV4', currentFileName);
+                localStorage.setItem('ultraWorkspaceFilesV7', JSON.stringify(fileSystem));
+                localStorage.setItem('ultraCurrentFileNameV7', currentFileName);
                 updateFileSelectorUI();
                 loadFileIntoBox(currentFileName);
             }
@@ -483,7 +563,6 @@
             event.target.value = '';
         }
 
-        // Toggle Scope UI (Single vs All Buttons)
         function updateScopeMode() {
             const scope = document.querySelector('input[name="updateScope"]:checked').value;
             const lblSingle = document.getElementById('labelSingle');
@@ -545,10 +624,6 @@
             return errors;
         }
 
-        function escapeRegExp(string) {
-            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        }
-
         function processCodeInstant() {
             let mainCode = editor.getValue();
             let oldCode = document.getElementById('oldCode').value;
@@ -562,18 +637,18 @@
                 return;
             }
 
-            let escapedOldCode = escapeRegExp(oldCode);
-            let regexFlags = isUpdateAll ? 'g' : '';
-            let smartRegex = new RegExp(escapedOldCode.replace(/\s+/g, '\\s+'), regexFlags);
-            let checkRegex = new RegExp(escapedOldCode.replace(/\s+/g, '\\s+'));
+            let checkRegex = new RegExp(escapeRegExp(oldCode).replace(/\s+/g, '\\s+'));
 
             if (!checkRegex.test(mainCode)) {
                 showStatus('warning', '<i class="fa-solid fa-triangle-exclamation mr-1"></i> ২ নম্বর বক্সের পুরোনো কোডটি ১ নম্বর মেইন কোডের ভেতরে এখনো পাওয়া যায়নি। কোড ঠিকমতো দিন।');
                 return;
             }
 
-            let matchCount = (mainCode.match(new RegExp(escapedOldCode.replace(/\s+/g, '\\s+'), 'g')) || []).length;
-            let updatedCode = mainCode.replace(smartRegex, newCode);
+            let matchCount = (mainCode.match(new RegExp(escapeRegExp(oldCode).replace(/\s+/g, '\\s+'), 'g')) || []).length;
+            
+            let replaceRegex = new RegExp(escapeRegExp(oldCode).replace(/\s+/g, '\\s+'), isUpdateAll ? 'g' : '');
+            let updatedCode = mainCode.replace(replaceRegex, newCode);
+            
             let syntaxErrors = checkSyntax(updatedCode);
             
             if(syntaxErrors.length > 0) {
@@ -603,17 +678,15 @@
                 return;
             }
 
-            let escapedOldCode = escapeRegExp(oldCode);
-            let regexFlags = isUpdateAll ? 'g' : '';
-            let smartRegex = new RegExp(escapedOldCode.replace(/\s+/g, '\\s+'), regexFlags);
-            let checkRegex = new RegExp(escapedOldCode.replace(/\s+/g, '\\s+'));
+            let checkRegex = new RegExp(escapeRegExp(oldCode).replace(/\s+/g, '\\s+'));
 
             if (!checkRegex.test(mainCode)) {
                 showStatus('error', '<i class="fa-solid fa-circle-xmark mr-1"></i> <b>কোড পাওয়া যায়নি!</b> ২ নম্বর বক্সের পুরোনো কোডটি ১ নম্বর মেইন কোডের ভেতরে নেই।');
                 return;
             }
 
-            let updatedCode = mainCode.replace(smartRegex, newCode);
+            let replaceRegex = new RegExp(escapeRegExp(oldCode).replace(/\s+/g, '\\s+'), isUpdateAll ? 'g' : '');
+            let updatedCode = mainCode.replace(replaceRegex, newCode);
 
             let syntaxErrors = checkSyntax(updatedCode);
             if(syntaxErrors.length > 0) {
@@ -624,8 +697,9 @@
             editor.setValue(updatedCode);
             saveCurrentFileToSystem();
             updateStats();
+            highlightMatches(); 
 
-            showStatus('success', `<i class="fa-solid fa-circle-check mr-1"></i> ম্যাজিক! কোড <b>${isDelete ? 'ডিলিট' : 'আপডেট'}</b> হয়ে ফাইলে সেভ হয়েছে!`);
+            showStatus('success', `<i class="fa-solid fa-circle-check mr-1"></i> ম্যাজিক! কোড <b>${isDelete ? 'ডিলিট' : 'আপডেট'}</b> হয়ে ফাইলে সেভ হয়েছে! (ভুল হলে Undo করুন)`);
             
             clearBox('oldCode');
             if(!isDelete) { clearBox('newCode'); }
@@ -654,4 +728,4 @@
         }
     </script>
 </body>
-    </html>
+</html>
