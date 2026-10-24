@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>স্মার্ট কোড আপডেটার - Ultimate Pro Max Final v4</title>
+    <title>স্মার্ট কোড আপডেটার - Ultimate Pro Max Final v5</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -100,52 +100,84 @@
         </div>
     </div>
 
-    <!-- MODAL 2: FIX DOUBLE CODE -->
+    <!-- MODAL 2: FIX DOUBLE CODE (2 Boxes) -->
     <div id="fixDoubleModal" class="fixed inset-0 bg-gray-900/80 hidden z-[99999] flex justify-center items-center p-4 backdrop-blur-sm transition-opacity">
-        <div class="bg-white rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col border border-purple-200">
-            <div class="bg-purple-600 text-white px-4 py-3 flex justify-between items-center">
+        <div class="bg-white rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col border border-purple-200 max-h-[90vh]">
+            <div class="bg-purple-600 text-white px-4 py-3 flex justify-between items-center shadow-md z-10">
                 <h3 class="font-black text-base md:text-lg flex items-center"><i class="fa-solid fa-broom mr-2"></i> ডাবল কোড ফিক্স করুন</h3>
                 <button onclick="closeModal('fixDoubleModal')" class="text-white hover:text-purple-200 transition"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
-            <div class="p-4 bg-purple-50">
-                <p class="text-xs md:text-sm font-bold text-purple-800 mb-3"><i class="fa-solid fa-lightbulb mr-1"></i> <b>নিয়ম:</b> ডাবল হওয়া কোডের এক কপি নিচে দিন। টুল নিজে থেকে বাড়তি কপি মুছে ১টি ফ্রেস কোড বসিয়ে দেবে।</p>
-                <div class="flex justify-between items-center mb-1">
-                    <span class="text-[10px] font-bold text-purple-700">কোড বক্স:</span>
-                    <div class="flex gap-1">
-                        <button onclick="copyAnyText('fixDoubleInput', this)" class="text-[10px] bg-blue-100 hover:bg-blue-200 text-blue-700 px-2 py-0.5 rounded border border-blue-200 font-bold"><i class="fa-solid fa-copy"></i> কপি</button>
-                        <button onclick="document.getElementById('fixDoubleInput').value=''" class="text-[10px] bg-red-100 hover:bg-red-200 text-red-700 px-2 py-0.5 rounded border border-red-200 font-bold"><i class="fa-solid fa-eraser"></i> ক্লিয়ার</button>
+            <div class="p-4 bg-purple-50 overflow-y-auto flex-1 flex flex-col gap-4">
+                <p class="text-xs md:text-sm font-bold text-purple-800"><i class="fa-solid fa-lightbulb mr-1"></i> <b>নিয়ম:</b> ১নং বক্সে কোড দিয়ে বাটন চাপুন। ২নং বক্সে ফ্রেশ কোড চলে আসবে, যা আপনি কপি করতে পারবেন।</p>
+                
+                <!-- Input Box -->
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-[10px] md:text-xs font-bold text-purple-700"><i class="fa-solid fa-1 mr-1"></i> যে কোডটি ডাবল হয়েছে (টার্গেট):</span>
+                        <div class="flex gap-1">
+                            <button onclick="copyAnyText('fixDoubleInput', this)" class="text-[10px] bg-blue-100 hover:bg-blue-200 text-blue-700 px-2 py-0.5 rounded border border-blue-200 font-bold transition"><i class="fa-solid fa-copy"></i> কপি</button>
+                            <button onclick="document.getElementById('fixDoubleInput').value=''" class="text-[10px] bg-red-100 hover:bg-red-200 text-red-700 px-2 py-0.5 rounded border border-red-200 font-bold transition"><i class="fa-solid fa-eraser"></i> ক্লিয়ার</button>
+                        </div>
                     </div>
+                    <textarea id="fixDoubleInput" rows="3" class="w-full border-2 border-purple-300 rounded-lg p-2.5 font-mono text-xs outline-none focus:border-purple-500 shadow-inner bg-white" placeholder="যে কোডটি ডাবল হয়েছে তা এখানে দিন..."></textarea>
                 </div>
-                <textarea id="fixDoubleInput" rows="4" class="w-full border-2 border-purple-300 rounded-lg p-2.5 font-mono text-xs outline-none focus:border-purple-500 shadow-inner bg-white" placeholder="যে কোডটি ডাবল হয়েছে তা এখানে দিন..."></textarea>
-            </div>
-            <div class="p-4 bg-gray-50 flex justify-end gap-2 border-t border-gray-200">
-                <button onclick="closeModal('fixDoubleModal')" class="px-4 py-2 bg-gray-200 text-gray-700 font-bold rounded-lg text-sm hover:bg-gray-300 transition">বাতিল</button>
-                <button onclick="cleanDoubleCodeInstant()" class="px-4 py-2 bg-purple-600 text-white font-bold rounded-lg text-sm hover:bg-purple-700 transition shadow-md flex items-center"><i class="fa-solid fa-wand-magic-sparkles mr-1.5 text-yellow-300"></i> ফিক্স করুন</button>
+
+                <div class="flex justify-center">
+                    <button onclick="cleanDoubleCodeInstant()" class="px-6 py-2 bg-purple-600 text-white font-black rounded-xl text-sm hover:bg-purple-700 transition shadow-lg transform hover:-translate-y-0.5 flex items-center border border-purple-500"><i class="fa-solid fa-wand-magic-sparkles mr-2 text-yellow-300"></i> ফিক্স করে ফ্রেশ কোড তৈরি করুন <i class="fa-solid fa-arrow-down ml-2"></i></button>
+                </div>
+
+                <!-- Output Box -->
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-[10px] md:text-xs font-bold text-green-700"><i class="fa-solid fa-2 mr-1"></i> ফ্রেশ মেইন কোড (রেজাল্ট):</span>
+                        <div class="flex gap-1">
+                            <button onclick="copyAnyText('fixDoubleOutput', this)" class="text-[10px] bg-green-100 hover:bg-green-200 text-green-800 px-2 py-0.5 rounded border border-green-300 font-bold transition"><i class="fa-solid fa-copy"></i> কপি</button>
+                            <button onclick="document.getElementById('fixDoubleOutput').value=''" class="text-[10px] bg-red-100 hover:bg-red-200 text-red-700 px-2 py-0.5 rounded border border-red-200 font-bold transition"><i class="fa-solid fa-eraser"></i> ক্লিয়ার</button>
+                        </div>
+                    </div>
+                    <textarea id="fixDoubleOutput" rows="4" readonly class="w-full border-2 border-green-300 rounded-lg p-2.5 font-mono text-xs outline-none bg-green-50 shadow-inner text-gray-700" placeholder="বাটনে চাপ দিলে এখানে ফ্রেশ কোড তৈরি হবে..."></textarea>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- MODAL 3: SMART DELETE -->
+    <!-- MODAL 3: SMART DELETE (2 Boxes) -->
     <div id="smartDeleteModal" class="fixed inset-0 bg-gray-900/80 hidden z-[99999] flex justify-center items-center p-4 backdrop-blur-sm transition-opacity">
-        <div class="bg-white rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col border border-rose-200">
-            <div class="bg-rose-600 text-white px-4 py-3 flex justify-between items-center">
+        <div class="bg-white rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col border border-rose-200 max-h-[90vh]">
+            <div class="bg-rose-600 text-white px-4 py-3 flex justify-between items-center shadow-md z-10">
                 <h3 class="font-black text-base md:text-lg flex items-center"><i class="fa-solid fa-scissors mr-2"></i> স্মার্ট ডিলিট (লাইন ফিক্স)</h3>
                 <button onclick="closeModal('smartDeleteModal')" class="text-white hover:text-rose-200 transition"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
-            <div class="p-4 bg-rose-50">
-                <p class="text-xs md:text-sm font-bold text-rose-800 mb-3"><i class="fa-solid fa-hand-pointer mr-1"></i> <b>নিয়ম:</b> যে কোডটুকু মুছে ফেলতে চান তা দিন। টুল ফাঁকা লাইন (Blank space) টেনে ঠিক করে দেবে!</p>
-                <div class="flex justify-between items-center mb-1">
-                    <span class="text-[10px] font-bold text-rose-700">কোড বক্স:</span>
-                    <div class="flex gap-1">
-                        <button onclick="copyAnyText('smartDeleteInput', this)" class="text-[10px] bg-blue-100 hover:bg-blue-200 text-blue-700 px-2 py-0.5 rounded border border-blue-200 font-bold"><i class="fa-solid fa-copy"></i> কপি</button>
-                        <button onclick="document.getElementById('smartDeleteInput').value=''" class="text-[10px] bg-red-100 hover:bg-red-200 text-red-700 px-2 py-0.5 rounded border border-red-200 font-bold"><i class="fa-solid fa-eraser"></i> ক্লিয়ার</button>
+            <div class="p-4 bg-rose-50 overflow-y-auto flex-1 flex flex-col gap-4">
+                <p class="text-xs md:text-sm font-bold text-rose-800"><i class="fa-solid fa-hand-pointer mr-1"></i> <b>নিয়ম:</b> ১নং বক্সে কোড দিন। বাটন চাপলে মেইন কোড থেকে সেটি মুছে ২নং বক্সে ফ্রেশ কোড চলে আসবে।</p>
+                
+                <!-- Input Box -->
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-[10px] md:text-xs font-bold text-rose-700"><i class="fa-solid fa-1 mr-1"></i> যে কোডটুকু মুছবেন (টার্গেট):</span>
+                        <div class="flex gap-1">
+                            <button onclick="copyAnyText('smartDeleteInput', this)" class="text-[10px] bg-blue-100 hover:bg-blue-200 text-blue-700 px-2 py-0.5 rounded border border-blue-200 font-bold transition"><i class="fa-solid fa-copy"></i> কপি</button>
+                            <button onclick="document.getElementById('smartDeleteInput').value=''" class="text-[10px] bg-red-100 hover:bg-red-200 text-red-700 px-2 py-0.5 rounded border border-red-200 font-bold transition"><i class="fa-solid fa-eraser"></i> ক্লিয়ার</button>
+                        </div>
                     </div>
+                    <textarea id="smartDeleteInput" rows="3" class="w-full border-2 border-rose-300 rounded-lg p-2.5 font-mono text-xs outline-none focus:border-rose-500 shadow-inner bg-white" placeholder="যে কোডটি মুছবেন তা এখানে দিন..."></textarea>
                 </div>
-                <textarea id="smartDeleteInput" rows="4" class="w-full border-2 border-rose-300 rounded-lg p-2.5 font-mono text-xs outline-none focus:border-rose-500 shadow-inner bg-white" placeholder="যে কোডটি মুছবেন তা এখানে দিন..."></textarea>
-            </div>
-            <div class="p-4 bg-gray-50 flex justify-end gap-2 border-t border-gray-200">
-                <button onclick="closeModal('smartDeleteModal')" class="px-4 py-2 bg-gray-200 text-gray-700 font-bold rounded-lg text-sm hover:bg-gray-300 transition">বাতিল</button>
-                <button onclick="smartLineDelete()" class="px-4 py-2 bg-rose-600 text-white font-bold rounded-lg text-sm hover:bg-rose-700 transition shadow-md flex items-center"><i class="fa-solid fa-trash-can mr-1.5"></i> ডিলিট ও লাইন ফিক্স</button>
+
+                <div class="flex justify-center">
+                    <button onclick="smartLineDelete()" class="px-6 py-2 bg-rose-600 text-white font-black rounded-xl text-sm hover:bg-rose-700 transition shadow-lg transform hover:-translate-y-0.5 flex items-center border border-rose-500"><i class="fa-solid fa-trash-can mr-2"></i> ডিলিট ও লাইন ফিক্স করুন <i class="fa-solid fa-arrow-down ml-2"></i></button>
+                </div>
+
+                <!-- Output Box -->
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-[10px] md:text-xs font-bold text-green-700"><i class="fa-solid fa-2 mr-1"></i> ফ্রেশ মেইন কোড (রেজাল্ট):</span>
+                        <div class="flex gap-1">
+                            <button onclick="copyAnyText('smartDeleteOutput', this)" class="text-[10px] bg-green-100 hover:bg-green-200 text-green-800 px-2 py-0.5 rounded border border-green-300 font-bold transition"><i class="fa-solid fa-copy"></i> কপি</button>
+                            <button onclick="document.getElementById('smartDeleteOutput').value=''" class="text-[10px] bg-red-100 hover:bg-red-200 text-red-700 px-2 py-0.5 rounded border border-red-200 font-bold transition"><i class="fa-solid fa-eraser"></i> ক্লিয়ার</button>
+                        </div>
+                    </div>
+                    <textarea id="smartDeleteOutput" rows="4" readonly class="w-full border-2 border-green-300 rounded-lg p-2.5 font-mono text-xs outline-none bg-green-50 shadow-inner text-gray-700" placeholder="বাটনে চাপ দিলে এখানে ফ্রেশ কোড তৈরি হবে..."></textarea>
+                </div>
             </div>
         </div>
     </div>
@@ -156,8 +188,8 @@
         <!-- Header -->
         <div class="bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-800 text-white p-4 md:p-5 rounded-2xl shadow-xl flex items-center justify-between">
             <div>
-                <h1 class="text-xl md:text-3xl font-black"><i class="fa-solid fa-wand-magic-sparkles text-yellow-400 mr-2"></i> স্মার্ট কোড আপডেটার <span class="bg-yellow-400 text-indigo-900 text-[10px] md:text-xs px-2 py-0.5 rounded-full ml-1 align-middle font-black uppercase">Ultimate Pro Max</span></h1>
-                <p class="text-blue-100 text-[11px] md:text-sm mt-1 font-medium">সব জায়গায় কপি এবং ক্লিয়ার বাটন যুক্ত করা হয়েছে!</p>
+                <h1 class="text-xl md:text-3xl font-black"><i class="fa-solid fa-wand-magic-sparkles text-yellow-400 mr-2"></i> স্মার্ট কোড আপডেটার <span class="bg-yellow-400 text-indigo-900 text-[10px] md:text-xs px-2 py-0.5 rounded-full ml-1 align-middle font-black uppercase">Ultimate Pro Max v5</span></h1>
+                <p class="text-blue-100 text-[11px] md:text-sm mt-1 font-medium">সব জায়গায় কপি/ক্লিয়ার বাটন এবং ডাবল বক্স পপ-আপ টুলস!</p>
             </div>
         </div>
 
@@ -189,12 +221,18 @@
                     <div class="flex flex-wrap justify-between items-center mb-3 gap-2">
                         <label class="font-bold text-gray-800 text-base md:text-lg flex items-center"><span class="bg-blue-600 text-white w-5 h-5 md:w-6 md:h-6 flex justify-center items-center rounded-full text-xs mr-2 shadow">১</span> মেইন কোড</label>
                         
-                        <div class="flex gap-2 w-full md:w-auto mt-2 md:mt-0">
+                        <div class="flex flex-wrap gap-2 w-full md:w-auto mt-2 md:mt-0 justify-end">
                             <button onclick="editor.undo()" class="flex-1 md:flex-none bg-yellow-50 text-yellow-700 hover:bg-yellow-100 px-3 py-1.5 rounded-lg border border-yellow-200 shadow-sm font-bold text-xs transition" title="আগের অবস্থায় ফিরুন"><i class="fa-solid fa-rotate-left mr-1"></i> Undo</button>
                             
                             <!-- Copy & Clear Main Code -->
                             <button onclick="copyMainCode(this)" class="flex-1 md:flex-none bg-blue-50 text-blue-700 hover:bg-blue-100 px-3 py-1.5 rounded-lg border border-blue-200 shadow-sm font-bold text-xs transition"><i class="fa-solid fa-copy mr-1"></i> কপি</button>
                             <button onclick="clearMainCode()" class="flex-1 md:flex-none bg-red-50 text-red-600 hover:bg-red-100 px-3 py-1.5 rounded-lg border border-red-200 shadow-sm font-bold text-xs transition"><i class="fa-solid fa-eraser mr-1"></i> ক্লিয়ার</button>
+
+                            <!-- NEW: File Upload Button Restored! -->
+                            <label class="flex-1 md:flex-none cursor-pointer bg-green-50 text-green-700 hover:bg-green-100 px-3 py-1.5 rounded-lg border border-green-200 shadow-sm font-bold text-xs transition flex items-center justify-center m-0">
+                                <i class="fa-solid fa-upload mr-1.5"></i> ফাইল আপলোড
+                                <input type="file" id="fileInput" accept=".html,.js,.txt,.css,.md" class="hidden" onchange="loadFromFile(event)">
+                            </label>
                         </div>
                     </div>
                     
@@ -384,19 +422,19 @@
                 highlightMatches();
             });
 
-            let savedFS = localStorage.getItem('ultraWorkspaceFilesFinalMaxV3');
+            let savedFS = localStorage.getItem('ultraWorkspaceFilesFinalMaxV5');
             if(savedFS) { fileSystem = JSON.parse(savedFS); } 
             else { fileSystem["index.html"] = ""; }
             
-            let lastFile = localStorage.getItem('ultraCurrentFileNameFinalMaxV3');
+            let lastFile = localStorage.getItem('ultraCurrentFileNameFinalMaxV5');
             if(lastFile && fileSystem[lastFile] !== undefined) { currentFileName = lastFile; } 
             else { currentFileName = Object.keys(fileSystem)[0]; }
 
             updateFileSelectorUI();
             loadFileIntoBox(currentFileName);
             
-            document.getElementById('oldCode').value = localStorage.getItem('tempOldCodeFinalMaxV3') || "";
-            document.getElementById('newCode').value = localStorage.getItem('tempNewCodeFinalMaxV3') || "";
+            document.getElementById('oldCode').value = localStorage.getItem('tempOldCodeFinalMaxV5') || "";
+            document.getElementById('newCode').value = localStorage.getItem('tempNewCodeFinalMaxV5') || "";
             
             processCodeInstant();
             handleReplaceInput(); 
@@ -473,16 +511,13 @@
         function cleanDoubleCodeInstant() {
             let query = document.getElementById('fixDoubleInput').value.trim();
             if(!query) {
-                showStatus('warning', '<i class="fa-solid fa-triangle-exclamation"></i> আগে বক্সে কোড দিন যা ডাবল পেস্ট হয়েছে।'); 
-                closeModal('fixDoubleModal');
+                alert('আগে ১নং বক্সে কোড দিন যা ডাবল পেস্ট হয়েছে।'); 
                 return;
             }
             
             let escaped = escapeRegExp(query).replace(/\s+/g, '\\s+');
             let mainCode = editor.getValue();
             let regex = new RegExp("(" + escaped + "\\s*){2,}", "g");
-
-            closeModal('fixDoubleModal');
 
             if (regex.test(mainCode)) {
                 let count = 0;
@@ -493,22 +528,24 @@
                 editor.setValue(fixedCode);
                 saveCurrentFileToSystem();
                 
+                // Show Output in Box 2
+                document.getElementById('fixDoubleOutput').value = fixedCode;
+                
                 doubleCodeMarkers.forEach(marker => marker.clear());
                 highlightMatches(); 
                 
-                showStatus('success', `<i class="fa-solid fa-broom"></i> ম্যাজিক! ${count} জায়গায় পরপর থাকা ডাবল কোড মুছে সিগেল ফ্রেস কোড করা হয়েছে এবং লাইন ফিক্স হয়েছে!`);
+                showStatus('success', `<i class="fa-solid fa-broom"></i> ম্যাজিক! ${count} জায়গায় পরপর থাকা ডাবল কোড মুছে মেইন কোড ক্লিন করা হয়েছে!`);
             } else {
-                showStatus('warning', '<i class="fa-solid fa-circle-info"></i> মেইন কোডে এই কোডটি ডাবল পেস্ট অবস্থায় পাওয়া যায়নি।');
+                alert('মেইন কোডে এই কোডটি ডাবল পেস্ট অবস্থায় পাওয়া যায়নি।');
             }
         }
 
         // ৩. স্মার্ট ডিলিট (লাইন ফিক্স সহ)
         function smartLineDelete() {
             let query = document.getElementById('smartDeleteInput').value.trim();
-            closeModal('smartDeleteModal');
 
             if (!query) {
-                showStatus('warning', '<i class="fa-solid fa-hand-pointer"></i> বক্সে কোড দিয়ে ডিলিট বাটনে চাপ দিন!');
+                alert('আগে ১নং বক্সে কোড দিন যা মুছতে চান!');
                 return;
             }
 
@@ -528,10 +565,14 @@
                     }
                 }
                 saveCurrentFileToSystem();
+                
+                // Show Output in Box 2
+                document.getElementById('smartDeleteOutput').value = editor.getValue();
+                
                 highlightMatches();
-                showStatus('success', '<i class="fa-solid fa-scissors"></i> বক্সে দেওয়া কোডটি ডিলিট করে লাইন ফিক্স করা হয়েছে! (ভুল হলে Undo করুন)');
+                showStatus('success', '<i class="fa-solid fa-scissors"></i> বক্সে দেওয়া কোডটি ডিলিট করে লাইন ফিক্স করা হয়েছে!');
             } else {
-                showStatus('error', '<i class="fa-solid fa-triangle-exclamation"></i> বক্সে দেওয়া কোডটি মেইন ফাইলে পাওয়া যায়নি!');
+                alert('বক্সে দেওয়া কোডটি মেইন ফাইলে পাওয়া যায়নি!');
             }
         }
         // -------------------------------------------------------------
@@ -696,8 +737,8 @@
         }
 
         function saveInputsTemporarily() {
-            localStorage.setItem('tempOldCodeFinalMaxV3', document.getElementById('oldCode').value);
-            localStorage.setItem('tempNewCodeFinalMaxV3', document.getElementById('newCode').value);
+            localStorage.setItem('tempOldCodeFinalMaxV5', document.getElementById('oldCode').value);
+            localStorage.setItem('tempNewCodeFinalMaxV5', document.getElementById('newCode').value);
         }
 
         function clearBox(boxId) {
@@ -721,7 +762,7 @@
         function switchFile() {
             let selector = document.getElementById('fileSelector');
             currentFileName = selector.value;
-            localStorage.setItem('ultraCurrentFileNameFinalMaxV3', currentFileName);
+            localStorage.setItem('ultraCurrentFileNameFinalMaxV5', currentFileName);
             loadFileIntoBox(currentFileName);
             hideStatus();
             clearSearchInput();
@@ -737,7 +778,7 @@
         function saveCurrentFileToSystem() {
             let code = editor.getValue();
             fileSystem[currentFileName] = code;
-            localStorage.setItem('ultraWorkspaceFilesFinalMaxV3', JSON.stringify(fileSystem));
+            localStorage.setItem('ultraWorkspaceFilesFinalMaxV5', JSON.stringify(fileSystem));
         }
 
         function createNewFile() {
@@ -749,8 +790,8 @@
                 }
                 fileSystem[newName] = "";
                 currentFileName = newName;
-                localStorage.setItem('ultraWorkspaceFilesFinalMaxV3', JSON.stringify(fileSystem));
-                localStorage.setItem('ultraCurrentFileNameFinalMaxV3', currentFileName);
+                localStorage.setItem('ultraWorkspaceFilesFinalMaxV5', JSON.stringify(fileSystem));
+                localStorage.setItem('ultraCurrentFileNameFinalMaxV5', currentFileName);
                 updateFileSelectorUI();
                 loadFileIntoBox(currentFileName);
             }
@@ -765,8 +806,8 @@
             if(confirm(`আপনি কি নিশ্চিত যে '${currentFileName}' ফাইলটি ডিলিট করতে চান?`)) {
                 delete fileSystem[currentFileName];
                 currentFileName = Object.keys(fileSystem)[0]; 
-                localStorage.setItem('ultraWorkspaceFilesFinalMaxV3', JSON.stringify(fileSystem));
-                localStorage.setItem('ultraCurrentFileNameFinalMaxV3', currentFileName);
+                localStorage.setItem('ultraWorkspaceFilesFinalMaxV5', JSON.stringify(fileSystem));
+                localStorage.setItem('ultraCurrentFileNameFinalMaxV5', currentFileName);
                 updateFileSelectorUI();
                 loadFileIntoBox(currentFileName);
             }
