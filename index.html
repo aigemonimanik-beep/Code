@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="bn" id="htmlElement">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>স্মার্ট কোড আপডেটার - Ultimate Pro Max v3</title>
+    <title>স্মার্ট কোড আপডেটার - Ultimate Pro Max v4</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -14,7 +15,7 @@
     <!-- FontAwesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
-    <!-- CodeMirror Core (For Syntax Highlighting & Fullscreen) -->
+    <!-- CodeMirror Core (For Syntax Highlighting & Fullscreen & Search) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/display/fullscreen.min.css">
@@ -25,6 +26,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/css/css.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/htmlmixed/htmlmixed.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/display/fullscreen.min.js"></script>
+    
+    <!-- CodeMirror Search Cursor Addon (NEW for Search Feature) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/search/searchcursor.min.js"></script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700;900&display=swap');
@@ -38,6 +42,10 @@
         /* CodeMirror Custom Height & Styling */
         .CodeMirror { height: 350px; border-radius: 0.75rem; font-family: 'Courier New', Courier, monospace; font-size: 13px; z-index: 5; border: 2px solid #cbd5e1; }
         .CodeMirror-fullscreen { z-index: 9999 !important; border-radius: 0 !important; }
+        
+        /* Highlight selection specifically to make search visible */
+        .CodeMirror-selected { background: #b3d4fc !important; }
+        .CodeMirror-focused .CodeMirror-selected { background: #b3d4fc !important; }
         
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
@@ -65,8 +73,8 @@
         <!-- Header -->
         <div class="bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-800 text-white p-4 md:p-5 rounded-2xl shadow-xl flex items-center justify-between">
             <div>
-                <h1 class="text-xl md:text-3xl font-black"><i class="fa-solid fa-wand-magic-sparkles text-yellow-400 mr-2"></i> স্মার্ট কোড আপডেটার <span class="bg-yellow-400 text-indigo-900 text-[10px] md:text-xs px-2 py-0.5 rounded-full ml-1 align-middle font-black uppercase">Pro Max v3</span></h1>
-                <p class="text-blue-100 text-[11px] md:text-sm mt-1 font-medium">আলাদা বাটন সিলেক্টর ও ইনস্ট্যান্ট রিয়েল-টাইম চেকার</p>
+                <h1 class="text-xl md:text-3xl font-black"><i class="fa-solid fa-wand-magic-sparkles text-yellow-400 mr-2"></i> স্মার্ট কোড আপডেটার <span class="bg-yellow-400 text-indigo-900 text-[10px] md:text-xs px-2 py-0.5 rounded-full ml-1 align-middle font-black uppercase">v4 Search</span></h1>
+                <p class="text-blue-100 text-[11px] md:text-sm mt-1 font-medium">স্মার্ট সার্চ বার এবং অটো ২ নং বক্সে পাঠানোর সিস্টেম</p>
             </div>
         </div>
 
@@ -109,6 +117,21 @@
                         </div>
                     </div>
                     
+                    <!-- NEW: Search & Select Bar -->
+                    <div class="flex gap-2 mb-3 items-center bg-blue-50/50 p-2 rounded-xl border border-blue-200">
+                        <div class="relative flex-1">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-blue-500"></i>
+                            <input type="text" id="searchInput" placeholder="কোড খুঁজুন (Search)..." class="w-full pl-9 pr-3 py-2 rounded-lg border border-blue-300 focus:border-blue-500 text-xs md:text-sm outline-none bg-white shadow-inner">
+                        </div>
+                        <div class="flex gap-1">
+                            <button onclick="findPrev()" class="bg-blue-600 text-white px-3 py-2 rounded-lg font-bold text-xs hover:bg-blue-700 shadow-sm transition" title="আগেরটি খুঁজুন"><i class="fa-solid fa-arrow-up"></i></button>
+                            <button onclick="findNext()" class="bg-blue-600 text-white px-3 py-2 rounded-lg font-bold text-xs hover:bg-blue-700 shadow-sm transition" title="পরেরটি খুঁজুন"><i class="fa-solid fa-arrow-down"></i></button>
+                        </div>
+                        <button onclick="copyToBox2()" class="bg-red-500 text-white px-3 py-2 rounded-lg font-bold text-xs hover:bg-red-600 shadow-sm flex items-center gap-1.5 transition whitespace-nowrap" title="সিলেক্ট করা কোড ২ নং বক্সে পাঠান">
+                            <i class="fa-solid fa-share"></i> <span class="hidden md:inline">২ নং বক্সে দিন</span>
+                        </button>
+                    </div>
+
                     <textarea id="mainCode"></textarea>
                     
                     <div class="flex justify-between mt-2">
@@ -207,6 +230,8 @@
         let editor;
         let fileSystem = {};
         let currentFileName = "index.html";
+        let searchCursor = null;
+        let lastQuery = null;
 
         window.onload = function() {
             editor = CodeMirror.fromTextArea(document.getElementById("mainCode"), {
@@ -225,26 +250,95 @@
                 processCodeInstant();
             });
 
-            let savedFS = localStorage.getItem('ultraWorkspaceFilesV3');
+            // Enter key on search input triggers Find Next
+            document.getElementById('searchInput').addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    findNext();
+                }
+            });
+
+            let savedFS = localStorage.getItem('ultraWorkspaceFilesV4');
             if(savedFS) { fileSystem = JSON.parse(savedFS); } 
             else { fileSystem["index.html"] = ""; }
             
-            let lastFile = localStorage.getItem('ultraCurrentFileNameV3');
+            let lastFile = localStorage.getItem('ultraCurrentFileNameV4');
             if(lastFile && fileSystem[lastFile] !== undefined) { currentFileName = lastFile; } 
             else { currentFileName = Object.keys(fileSystem)[0]; }
 
             updateFileSelectorUI();
             loadFileIntoBox(currentFileName);
             
-            document.getElementById('oldCode').value = localStorage.getItem('tempOldCodeV3') || "";
-            document.getElementById('newCode').value = localStorage.getItem('tempNewCodeV3') || "";
+            document.getElementById('oldCode').value = localStorage.getItem('tempOldCodeV4') || "";
+            document.getElementById('newCode').value = localStorage.getItem('tempNewCodeV4') || "";
             
             processCodeInstant();
         };
 
+        // --- NEW: Search & Select Logic ---
+        function findNext() {
+            const query = document.getElementById('searchInput').value;
+            if (!query) return;
+            
+            if (query !== lastQuery || !searchCursor) {
+                searchCursor = editor.getSearchCursor(query);
+                lastQuery = query;
+            }
+            
+            if (searchCursor.findNext()) {
+                editor.setSelection(searchCursor.from(), searchCursor.to());
+                editor.scrollIntoView({from: searchCursor.from(), to: searchCursor.to()}, 100);
+            } else {
+                // Wrap around
+                searchCursor = editor.getSearchCursor(query);
+                if (searchCursor.findNext()) {
+                    editor.setSelection(searchCursor.from(), searchCursor.to());
+                    editor.scrollIntoView({from: searchCursor.from(), to: searchCursor.to()}, 100);
+                    showStatus('success', 'আবার প্রথম থেকে খোঁজা হচ্ছে।');
+                } else {
+                    showStatus('warning', '<i class="fa-solid fa-triangle-exclamation"></i> কোডটি পাওয়া যায়নি!');
+                }
+            }
+        }
+
+        function findPrev() {
+            const query = document.getElementById('searchInput').value;
+            if (!query) return;
+            
+            if (query !== lastQuery || !searchCursor) {
+                searchCursor = editor.getSearchCursor(query);
+                lastQuery = query;
+            }
+            
+            if (searchCursor.findPrevious()) {
+                editor.setSelection(searchCursor.from(), searchCursor.to());
+                editor.scrollIntoView({from: searchCursor.from(), to: searchCursor.to()}, 100);
+            } else {
+                // Wrap around to end
+                searchCursor = editor.getSearchCursor(query, {line: editor.lineCount() - 1, ch: 0});
+                if (searchCursor.findPrevious()) {
+                    editor.setSelection(searchCursor.from(), searchCursor.to());
+                    editor.scrollIntoView({from: searchCursor.from(), to: searchCursor.to()}, 100);
+                    showStatus('success', 'শেষ থেকে খোঁজা হচ্ছে।');
+                }
+            }
+        }
+
+        function copyToBox2() {
+            const selectedText = editor.getSelection();
+            if (selectedText) {
+                document.getElementById('oldCode').value = selectedText;
+                saveInputsTemporarily();
+                processCodeInstant();
+                showStatus('success', '<i class="fa-solid fa-share"></i> সিলেক্ট করা কোড ২ নম্বর বক্সে পাঠানো হয়েছে!');
+            } else {
+                showStatus('warning', '<i class="fa-solid fa-hand-pointer"></i> আগে মেইন কোড থেকে নির্দিষ্ট অংশ সিলেক্ট করুন!');
+            }
+        }
+        // ----------------------------------
+
         function saveInputsTemporarily() {
-            localStorage.setItem('tempOldCodeV3', document.getElementById('oldCode').value);
-            localStorage.setItem('tempNewCodeV3', document.getElementById('newCode').value);
+            localStorage.setItem('tempOldCodeV4', document.getElementById('oldCode').value);
+            localStorage.setItem('tempNewCodeV4', document.getElementById('newCode').value);
         }
 
         function clearBox(boxId) {
@@ -268,7 +362,7 @@
         function switchFile() {
             let selector = document.getElementById('fileSelector');
             currentFileName = selector.value;
-            localStorage.setItem('ultraCurrentFileNameV3', currentFileName);
+            localStorage.setItem('ultraCurrentFileNameV4', currentFileName);
             loadFileIntoBox(currentFileName);
             hideStatus();
         }
@@ -282,7 +376,7 @@
         function saveCurrentFileToSystem() {
             let code = editor.getValue();
             fileSystem[currentFileName] = code;
-            localStorage.setItem('ultraWorkspaceFilesV3', JSON.stringify(fileSystem));
+            localStorage.setItem('ultraWorkspaceFilesV4', JSON.stringify(fileSystem));
         }
 
         function createNewFile() {
@@ -294,8 +388,8 @@
                 }
                 fileSystem[newName] = "";
                 currentFileName = newName;
-                localStorage.setItem('ultraWorkspaceFilesV3', JSON.stringify(fileSystem));
-                localStorage.setItem('ultraCurrentFileNameV3', currentFileName);
+                localStorage.setItem('ultraWorkspaceFilesV4', JSON.stringify(fileSystem));
+                localStorage.setItem('ultraCurrentFileNameV4', currentFileName);
                 updateFileSelectorUI();
                 loadFileIntoBox(currentFileName);
             }
@@ -310,8 +404,8 @@
             if(confirm(`আপনি কি নিশ্চিত যে '${currentFileName}' ফাইলটি ডিলিট করতে চান?`)) {
                 delete fileSystem[currentFileName];
                 currentFileName = Object.keys(fileSystem)[0]; 
-                localStorage.setItem('ultraWorkspaceFilesV3', JSON.stringify(fileSystem));
-                localStorage.setItem('ultraCurrentFileNameV3', currentFileName);
+                localStorage.setItem('ultraWorkspaceFilesV4', JSON.stringify(fileSystem));
+                localStorage.setItem('ultraCurrentFileNameV4', currentFileName);
                 updateFileSelectorUI();
                 loadFileIntoBox(currentFileName);
             }
@@ -561,4 +655,4 @@
         }
     </script>
 </body>
-  </html>
+</html>
